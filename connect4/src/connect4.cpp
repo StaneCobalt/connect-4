@@ -26,65 +26,164 @@ bool Connect4::is_col_available(unsigned col) {
 }
 
 bool Connect4::set_token(char token, unsigned col) {
-	if (col >= COLS) {
-		cout << "Column is out of bounds";
-		return false;
-	}
-	else if (!is_col_available(col)) {
-		cout << "Column is full.";
-		return false;
-	}
-	
-	for (unsigned i = 0; i < ROWS; i++) {
-		if (display[i][col] == empty_token) {
-			display[i][col] = token;
-            turn_count++;
-			return true;
+	try {
+		if (col >= COLS) {
+			cout << "Column is out of bounds.\n";
+			return false;
 		}
+		else if (!is_col_available(col)) {
+			cout << "Column is full.\n";
+			return false;
+		}
+		
+		for (unsigned i = 0; i < ROWS; i++) {
+			if (display[i][col] == empty_token) {
+				display[i][col] = token;
+				turn_count++;
+				return true;
+			}
+		}
+
+		cout << "Unknown error. Try again.\n";
+		return false;
+	}
+	catch(const char* message) {
+		std::cerr << "Error in set_token!\n" << message << endl;
+		return false;
 	}
 }
 
 void Connect4::check_for_4(char token1, char token2) {	
-    if(turn_count < 7) return;
+    if (turn_count < 7) return;
 
-	unsigned count = 0;
-	
-	// check vertically
-	for (unsigned i = 0; i < COLS; i++) {
-		for (unsigned j = 0; j < ROWS; j++) {
-			if (count == 4) {
-				game_over = true;
-				return;
+	try {
+		unsigned count = 0, threshold = 3, offset = 0, index = 0;
+		
+		// check vertically
+		for (unsigned i = 0; i < COLS; i++) {
+			for (unsigned j = 0; j < ROWS; j++) {
+				if (display[j][i] == token1) {
+					count++;
+					if (count == 4) {
+						game_over = true;
+						return;
+					}
+				}
+				else {
+					count = 0;
+				}
 			}
-			else if (display[j][i] == token1)
-				count++;
-			else
-				count = 0;
+		}
+		
+		// check horizontally
+		count = 0;
+		for (unsigned i = 0; i < ROWS; i++) {
+			for (unsigned j = 0; j < COLS; j++) {
+				if (display[i][j] == token1) {
+					count++;
+					if (count == 4) {
+						game_over = true;
+						return;
+					}
+				}
+				else {
+					count = 0;
+				}
+			}
+		}
+
+		// check diagonally left to right (lower)
+		count = 0;
+		while(offset < threshold) {
+			for (int i = 0; i+offset < ROWS; i++) {
+				if (display[i+offset][i] == token1) {
+					count++;
+					if (count == 4) {
+						game_over = true;
+						return;
+					}
+				}
+				else {
+					count = 0;
+				}
+			}
+			offset++;
+		}
+
+		// check diagonally left to right (upper)
+		offset = 0;
+		count = 0;
+		while(offset < threshold) {
+			for (unsigned i = 0; i < ROWS-offset; i++) {
+				if (display[i][i+offset+1] == token1) {
+					count++;
+					if (count == 4) {
+						game_over = true;
+						return;
+					}
+				}
+				else {
+					count = 0;
+				}
+			}
+			offset++;
+		}
+
+		// check diagonally right to left (lower)
+		offset = 1;
+		count = 0;
+		while(offset <= threshold) {
+			unsigned col = ROWS-offset;
+
+			for (unsigned i = 0; i < ROWS-offset; i++) {
+				if (display[i][col] == token1) {
+					count++;
+					if (count == 4) {
+						game_over = true;
+						return;
+					}
+				}
+				else {
+					count = 0;
+				}
+				col--;
+			}
+
+			offset++;
+		}
+
+		// check diagonally right to left (upper)
+		offset = 0;
+		count = 0;
+		while(offset < threshold) {
+			unsigned col = COLS-1;
+
+			for (int i = offset; i < ROWS; i++) {
+				if (display[i][col] == token1) {
+					count++;
+					if (count == 4) {
+						game_over = true;
+						return;
+					}
+				}
+				else {
+					count = 0;
+				}
+				col--;
+			}
+
+			offset++;
 		}
 	}
-	
-	count = 0;
-	// check horizontally
-	for (unsigned i = 0; i < ROWS; i++) {
-		for (unsigned j = 0; j < COLS; j++) {
-			if (count == 4) {
-				game_over = true;
-				return;
-			}
-			else if (display[i][j] == token1)
-				count++;
-			else
-				count = 0;
-		}
+	catch (const char* message) {
+		std::cerr << "Error in check_for_4!\n" << message << endl;
 	}
-	
-	// todo: check diagonally
 }
 
 unsigned Connect4::get_bot_move() {
     unsigned bot_move = rand() % COLS;
 
-	while(!is_col_available(bot_move)) {
+	while (!is_col_available(bot_move)) {
 		bot_move = rand() % COLS;
 	}
 
