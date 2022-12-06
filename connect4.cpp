@@ -13,7 +13,7 @@ void Connect4::init_grid() {
 void Connect4::display_grid() {
 	for (unsigned i = ROWS; i > 0; i--) {
 		for (unsigned j = 0; j < COLS; j++) {
-			std::cout << display[i-1][j] << ' ';
+			std::cout << display[i - 1][j] << ' ';
 		}
 		cout << '\n';
 	}
@@ -22,7 +22,7 @@ void Connect4::display_grid() {
 }
 
 bool Connect4::is_col_available(unsigned col) {
-	return display[ROWS-1][col] == empty_token;
+	return display[ROWS - 1][col] == empty_token;
 }
 
 bool Connect4::set_token(char token, unsigned col) {
@@ -35,7 +35,7 @@ bool Connect4::set_token(char token, unsigned col) {
 			cout << "Column is full.\n";
 			return false;
 		}
-		
+
 		for (unsigned i = 0; i < ROWS; i++) {
 			if (display[i][col] == empty_token) {
 				display[i][col] = token;
@@ -47,18 +47,18 @@ bool Connect4::set_token(char token, unsigned col) {
 		cout << "Unknown error. Try again.\n";
 		return false;
 	}
-	catch(const char* message) {
+	catch (const char* message) {
 		std::cerr << "Error in set_token!\n" << message << endl;
 		return false;
 	}
 }
 
-void Connect4::check_for_4(char token1, char token2) {	
-    if (turn_count < 7) return;
+void Connect4::check_for_4(char token1, char token2) {
+	if (turn_count < 7) return;
 
 	try {
 		unsigned count = 0, threshold = 3, offset = 0, index = 0;
-		
+
 		// check vertically
 		for (unsigned i = 0; i < COLS; i++) {
 			for (unsigned j = 0; j < ROWS; j++) {
@@ -74,7 +74,7 @@ void Connect4::check_for_4(char token1, char token2) {
 				}
 			}
 		}
-		
+
 		// check horizontally
 		count = 0;
 		for (unsigned i = 0; i < ROWS; i++) {
@@ -94,9 +94,9 @@ void Connect4::check_for_4(char token1, char token2) {
 
 		// check diagonally left to right (lower)
 		count = 0;
-		while(offset < threshold) {
-			for (int i = 0; i+offset < ROWS; i++) {
-				if (display[i+offset][i] == token1) {
+		while (offset < threshold) {
+			for (int i = 0; i + offset < ROWS; i++) {
+				if (display[i + offset][i] == token1) {
 					count++;
 					if (count == 4) {
 						game_over = true;
@@ -113,9 +113,9 @@ void Connect4::check_for_4(char token1, char token2) {
 		// check diagonally left to right (upper)
 		offset = 0;
 		count = 0;
-		while(offset < threshold) {
-			for (unsigned i = 0; i < ROWS-offset; i++) {
-				if (display[i][i+offset+1] == token1) {
+		while (offset < threshold) {
+			for (unsigned i = 0; i < ROWS - offset; i++) {
+				if (display[i][i + offset + 1] == token1) {
 					count++;
 					if (count == 4) {
 						game_over = true;
@@ -132,10 +132,10 @@ void Connect4::check_for_4(char token1, char token2) {
 		// check diagonally right to left (lower)
 		offset = 1;
 		count = 0;
-		while(offset <= threshold) {
-			unsigned col = ROWS-offset;
+		while (offset <= threshold) {
+			unsigned col = ROWS - offset;
 
-			for (unsigned i = 0; i < ROWS-offset; i++) {
+			for (unsigned i = 0; i < ROWS - offset; i++) {
 				if (display[i][col] == token1) {
 					count++;
 					if (count == 4) {
@@ -155,8 +155,8 @@ void Connect4::check_for_4(char token1, char token2) {
 		// check diagonally right to left (upper)
 		offset = 0;
 		count = 0;
-		while(offset < threshold) {
-			unsigned col = COLS-1;
+		while (offset < threshold) {
+			unsigned col = COLS - 1;
 
 			for (int i = offset; i < ROWS; i++) {
 				if (display[i][col] == token1) {
@@ -181,7 +181,7 @@ void Connect4::check_for_4(char token1, char token2) {
 }
 
 unsigned Connect4::get_bot_move() {
-    unsigned bot_move = rand() % COLS;
+	unsigned bot_move = rand() % COLS;
 
 	while (!is_col_available(bot_move)) {
 		bot_move = rand() % COLS;
