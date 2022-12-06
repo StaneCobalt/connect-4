@@ -190,7 +190,7 @@ unsigned Connect4::get_bot_move() {
 	while (!is_col_available(bot_move)) {
 		std::default_random_engine generator { static_cast<long unsigned int>(time(0)) };
 		std::uniform_int_distribution<unsigned> distribution(0, COLS - 1);
-		bot_move = distribution(generator); bot_move = rand() % COLS;
+		bot_move = distribution(generator);
 	}
 
 	return bot_move;
