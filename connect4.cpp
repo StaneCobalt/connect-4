@@ -1,5 +1,7 @@
 #include <iostream>
 #include "connect4.h"
+#include <random>
+#include <time.h>
 using namespace std;
 
 void Connect4::init_grid() {
@@ -181,10 +183,14 @@ void Connect4::check_for_4(char token1, char token2) {
 }
 
 unsigned Connect4::get_bot_move() {
-	unsigned bot_move = rand() % COLS;
+	std::default_random_engine generator { static_cast<long unsigned int>(time(0)) };
+	std::uniform_int_distribution<unsigned> distribution(0, COLS - 1);
+	unsigned bot_move = distribution(generator);
 
 	while (!is_col_available(bot_move)) {
-		bot_move = rand() % COLS;
+		std::default_random_engine generator { static_cast<long unsigned int>(time(0)) };
+		std::uniform_int_distribution<unsigned> distribution(0, COLS - 1);
+		bot_move = distribution(generator); bot_move = rand() % COLS;
 	}
 
 	return bot_move;
